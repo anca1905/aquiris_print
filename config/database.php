@@ -1,11 +1,28 @@
 <?php
 // config/database.php
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'db_aquiris_print');
-define('DB_PORT', 3306);
+if (file_exists(__DIR__ . '/database.local.php')) {
+    require_once __DIR__ . '/database.local.php';
+} else {
+    // Auto detect if running on live server (aaPanel / skillance.cloud)
+    $isLiveServer = (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'skillance.cloud') !== false)
+                 || (isset($_SERVER['DOCUMENT_ROOT']) && strpos($_SERVER['DOCUMENT_ROOT'], '/www/wwwroot') !== false)
+                 || file_exists('/www/server/nginx');
+
+    if ($isLiveServer) {
+        if (!defined('DB_HOST')) define('DB_HOST', '127.0.0.1');
+        if (!defined('DB_USER')) define('DB_USER', 'aquiris_user');
+        if (!defined('DB_PASS')) define('DB_PASS', 'Aquiris#Print2026!');
+        if (!defined('DB_NAME')) define('DB_NAME', 'db_aquiris_print');
+        if (!defined('DB_PORT')) define('DB_PORT', 3306);
+    } else {
+        if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
+        if (!defined('DB_USER')) define('DB_USER', 'root');
+        if (!defined('DB_PASS')) define('DB_PASS', '');
+        if (!defined('DB_NAME')) define('DB_NAME', 'db_aquiris_print');
+        if (!defined('DB_PORT')) define('DB_PORT', 3306);
+    }
+}
 
 class Database {
     private static ?PDO $instance = null;
