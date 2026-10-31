@@ -138,7 +138,7 @@ if ($hour >= 5 && $hour < 11) {
     <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white text-stone-700 flex flex-col transition-transform duration-300 transform -translate-x-full md:translate-x-0 md:static md:z-auto h-screen flex-shrink-0 border-r border-stone-200 shadow-sm">
         <!-- Brand Header with Official Aquiris Logo -->
         <div class="flex-shrink-0 h-20 px-4 flex items-center justify-between border-b border-stone-100 bg-[#FAF8F5]/80">
-            <a href="index.php" class="flex items-center gap-2.5 group">
+            <a href="dashboard.php" class="flex items-center gap-2.5 group">
                 <div class="w-11 h-11 rounded-2xl bg-white border border-stone-200/90 flex items-center justify-center p-1.5 shadow-xs group-hover:scale-105 transition-transform flex-shrink-0">
                     <img src="assets/images/icon-mark.png" alt="Aquiris Logo" class="w-full h-full object-contain" />
                 </div>
@@ -172,8 +172,8 @@ if ($hour >= 5 && $hour < 11) {
                 </div>
                 <ul class="space-y-1">
                     <li>
-                        <a href="index.php" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition <?= $currentPage === 'index.php' ? 'bg-stone-100 text-stone-900 font-bold border-l-4 border-amber-600' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' ?>">
-                            <i class="fa-solid fa-house-chimney w-5 text-center <?= $currentPage === 'index.php' ? 'text-amber-600' : 'text-stone-400' ?>"></i>
+                        <a href="dashboard.php" class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition <?= $currentPage === 'dashboard.php' ? 'bg-stone-100 text-stone-900 font-bold border-l-4 border-amber-600' : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900' ?>">
+                            <i class="fa-solid fa-house-chimney w-5 text-center <?= $currentPage === 'dashboard.php' ? 'text-amber-600' : 'text-stone-400' ?>"></i>
                             <span>Beranda / Dashboard</span>
                         </a>
                     </li>
@@ -347,7 +347,7 @@ if ($hour >= 5 && $hour < 11) {
 
             <!-- Topbar Quick Warm Actions -->
             <div class="flex items-center gap-2">
-                <a href="landing.php" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-semibold transition" title="Buka Landing Page Pemesanan Pelanggan">
+                <a href="index.php" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-semibold transition" title="Buka Landing Page Pemesanan Pelanggan">
                     <i class="fa-solid fa-arrow-up-right-from-square text-amber-600"></i>
                     <span class="hidden lg:inline">Landing Page</span>
                 </a>

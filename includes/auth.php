@@ -26,7 +26,7 @@ function requireAuth(string $requiredRole = ''): void {
 
     if ($requiredRole !== '' && $_SESSION['user_role'] !== $requiredRole && $_SESSION['user_role'] !== 'admin') {
         setFlash('error', 'Akses ditolak. Halaman tersebut hanya dapat diakses oleh Administrator/Owner.');
-        header('Location: index.php');
+        header('Location: dashboard.php');
         exit;
     }
 }

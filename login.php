@@ -3,7 +3,7 @@
 require_once __DIR__ . '/config/app.php';
 
 if (isLoggedIn()) {
-    header('Location: index.php');
+    header('Location: dashboard.php');
     exit;
 }
 
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         if (attemptLogin($username, $password)) {
             setFlash('success', 'Halo ' . htmlspecialchars($_SESSION['user_name']) . ', selamat bekerja!');
-            header('Location: index.php');
+            header('Location: dashboard.php');
             exit;
         } else {
             $error = 'Username atau kata sandi tidak cocok. Silakan coba lagi.';
@@ -73,7 +73,7 @@ $shopTagline = getSetting('shop_tagline', 'Solusi Percetakan & Sewa Papan Akrili
                     <span class="text-[11px] text-stone-500">Kirim dari HP/Laptop Anda tanpa perlu login</span>
                 </div>
             </div>
-            <a href="landing.php" class="px-3 py-1.5 bg-stone-900 hover:bg-stone-800 text-amber-300 rounded-xl font-bold text-[11px] shrink-0 transition flex items-center gap-1 shadow-sm">
+            <a href="index.php#order-form" class="px-3 py-1.5 bg-stone-900 hover:bg-stone-800 text-amber-300 rounded-xl font-bold text-[11px] shrink-0 transition flex items-center gap-1 shadow-sm">
                 <span>Buka Form</span>
                 <i class="fa-solid fa-arrow-right text-[9px]"></i>
             </a>

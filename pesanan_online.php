@@ -131,7 +131,7 @@ $fonnteToken = getSetting('fonnte_token', '');
                            class="w-48 sm:w-56 pl-8 pr-3 py-1.5 bg-stone-50 border border-stone-200 rounded-xl text-xs outline-none focus:bg-white focus:ring-1 focus:ring-amber-500 font-medium" />
                     <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-stone-400 text-xs"></i>
                 </form>
-                <a href="landing.php" target="_blank" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm" title="Buka Landing Page Pemesanan Cetak">
+                <a href="index.php" target="_blank" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm" title="Buka Landing Page Pemesanan Cetak">
                     <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                     <span class="hidden sm:inline">Landing Page</span>
                 </a>
@@ -153,7 +153,7 @@ $fonnteToken = getSetting('fonnte_token', '');
                     </span>
                 </h4>
                 <p class="text-[11px] text-stone-400 mt-0.5">
-                    File cetak otomatis terkirim ke WhatsApp operator via Fonnte. Klik tombol <strong>"Download File"</strong> di bawah untuk langsung membuka & mencetak di printer toko.
+                    Notifikasi pesanan otomatis terkirim ke WhatsApp operator via Fonnte. Klik tombol <strong>"Download File"</strong> di bawah untuk langsung mengunduh & mencetak di printer toko.
                 </p>
             </div>
         </div>
@@ -180,7 +180,7 @@ $fonnteToken = getSetting('fonnte_token', '');
                 Belum ada pesanan masuk dengan status yang dipilih. Bagikan link landing page toko kepada pelanggan untuk menerima pesanan dan file cetak online.
             </p>
             <div class="mt-4">
-                <a href="landing.php" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 bg-stone-900 text-amber-300 rounded-xl text-xs font-bold shadow transition">
+                <a href="index.php" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 bg-stone-900 text-amber-300 rounded-xl text-xs font-bold shadow transition">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
                     <span>Buka Landing Page Pemesanan</span>
                 </a>
