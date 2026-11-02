@@ -119,6 +119,27 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset($_POST['submit_onl
                 $quantity, $finishing, $notes, $savedFilePath, $originalFileName, $fileSize, $fonnteStatusText
             ]);
 
+            // Also send automated confirmation WhatsApp to Customer
+            $customerConfMsg = "🖨️ *PESANAN CETAK BERHASIL DITERIMA!*\n"
+                             . "*{$shopName}*\n"
+                             . "────────────────────────────\n"
+                             . "Halo kak *{$customerName}*,\n"
+                             . "Terima kasih telah memesan layanan cetak di *Aquiris Print*!\n\n"
+                             . "📄 *Rincian Pesanan Anda:*\n"
+                             . "• Kode Pesanan: *#{$orderCode}*\n"
+                             . "• Layanan: {$serviceType}\n"
+                             . "• Kertas: {$paperType}\n"
+                             . "• Mode Cetak: {$colorMode}\n"
+                             . "• Jumlah: {$quantity} Rangkap\n"
+                             . "• Finishing: {$finishing}\n"
+                             . "• Status: *⏳ MENUNGGU ANTRIAN CETAK*\n\n"
+                             . "Kami akan otomatis mengabari Anda kembali via WhatsApp saat dokumen mulai dicetak dan saat sudah selesai siap diambil di studio kami.\n\n"
+                             . "📍 *Lokasi Pengambilan:* {$shopAddress}\n"
+                             . "────────────────────────────\n"
+                             . "_Aquiris Print Popalia - Solusi Cetak Cepat & Berkualitas_";
+
+            sendFonnteMessage($customerPhone, $customerConfMsg);
+
             $orderSubmitted = true;
             $submittedOrder = [
                 'order_code' => $orderCode,
@@ -136,6 +157,25 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset($_POST['submit_onl
                 'fonnte_sent' => $fonnteResult['status']
             ];
         }
+    }
+}
+
+// Handle Order Tracking Search
+$trackedOrder = null;
+$trackingQuery = trim($_GET['track'] ?? '');
+$trackingError = '';
+
+if (!empty($trackingQuery)) {
+    $cleanQuery = trim($trackingQuery, '# ');
+    $cleanPhone = preg_replace('/[^0-9]/', '', $cleanQuery);
+    $waPhone = !empty($cleanPhone) ? formatWaPhone($cleanPhone) : '';
+
+    $stmtTrack = $pdo->prepare("SELECT * FROM online_orders WHERE order_code = ? OR order_code LIKE ? OR customer_phone = ? OR customer_phone = ? ORDER BY id DESC LIMIT 1");
+    $stmtTrack->execute([$cleanQuery, '%' . $cleanQuery . '%', $cleanPhone, $waPhone]);
+    $trackedOrder = $stmtTrack->fetch();
+
+    if (!$trackedOrder) {
+        $trackingError = "Pesanan dengan kode atau nomor WhatsApp \"{$cleanQuery}\" tidak ditemukan. Mohon pastikan nomor atau kodenya sudah benar.";
     }
 }
 
@@ -390,6 +430,7 @@ $acrylicShowcase = $pdo->query("SELECT * FROM acrylic_items WHERE status = 'avai
             <!-- Nav Links (Desktop) -->
             <nav class="hidden md:flex items-center gap-7 text-xs font-bold text-stone-600">
                 <a href="#order-form" class="hover:text-amber-700 transition">Kirim File Cetak</a>
+                <a href="#cek-status" class="hover:text-amber-700 transition flex items-center gap-1.5"><i class="fa-solid fa-magnifying-glass text-[10px] text-amber-600"></i> Cek Status</a>
                 <a href="#layanan" class="hover:text-amber-700 transition">Tarif Layanan</a>
                 <a href="#akrilik" class="hover:text-amber-700 transition">Rental Akrilik</a>
                 <a href="#cara-kerja" class="hover:text-amber-700 transition">Cara Pesan</a>
@@ -680,6 +721,138 @@ $acrylicShowcase = $pdo->query("SELECT * FROM acrylic_items WHERE status = 'avai
         </div>
     </section>
 
+    <!-- Order Tracking Section -->
+    <section id="cek-status" class="py-10 bg-gradient-to-b from-[#FAF8F5] via-[#F4EFE6]/60 to-[#FAF8F5] border-t border-stone-200 scroll-mt-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+            <div class="bg-white rounded-3xl border-2 border-stone-200/90 shadow-sm p-6 sm:p-8">
+                <div class="max-w-xl mx-auto text-center mb-6">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-200 mb-2">
+                        <i class="fa-solid fa-magnifying-glass text-amber-600"></i>
+                        <span>Lacak Pesanan Mandiri</span>
+                    </span>
+                    <h2 class="serif-font text-2xl font-bold text-stone-900">
+                        Cek Status & Progres Pesanan Cetak
+                    </h2>
+                    <p class="text-xs text-stone-600 mt-1.5 leading-relaxed">
+                        Masukkan <strong>Kode Pesanan</strong> (contoh: <em>ORD-20261102-0001</em>) atau <strong>Nomor WhatsApp</strong> Anda untuk melihat status cetak terkini secara real-time.
+                    </p>
+                </div>
+
+                <!-- Tracking Form -->
+                <form method="GET" action="index.php#cek-status" class="max-w-lg mx-auto flex flex-col sm:flex-row gap-2.5 mb-6">
+                    <div class="relative flex-1">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400 text-xs">
+                            <i class="fa-solid fa-hashtag"></i>
+                        </div>
+                        <input type="text" name="track" value="<?= htmlspecialchars($trackingQuery) ?>" required
+                               placeholder="Contoh: ORD-20261102-0001 atau 08123456..."
+                               class="w-full pl-9 pr-4 py-2.5 bg-stone-50 border border-stone-300 rounded-xl outline-none focus:bg-white focus:ring-2 focus:ring-amber-500 font-semibold text-xs text-stone-900" />
+                    </div>
+                    <button type="submit" class="px-5 py-2.5 bg-stone-900 hover:bg-stone-800 text-amber-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shrink-0 shadow-sm active:scale-95">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Cek Pesanan</span>
+                    </button>
+                </form>
+
+                <!-- Tracking Results -->
+                <?php if (!empty($trackingError)): ?>
+                    <div class="max-w-lg mx-auto p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs text-center flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                        <span><?= htmlspecialchars($trackingError) ?></span>
+                    </div>
+                <?php elseif ($trackedOrder): ?>
+                    <?php
+                        $st = $trackedOrder['status'];
+                        $stColors = [
+                            'menunggu' => ['bg' => 'bg-amber-50', 'text' => 'text-amber-800', 'border' => 'border-amber-200', 'icon' => 'fa-clock-rotate-left', 'label' => 'Menunggu Antrean Cetak'],
+                            'diproses' => ['bg' => 'bg-blue-50', 'text' => 'text-blue-800', 'border' => 'border-blue-200', 'icon' => 'fa-gear fa-spin', 'label' => 'Sedang Diproses / Dicetak'],
+                            'selesai' => ['bg' => 'bg-emerald-50', 'text' => 'text-emerald-800', 'border' => 'border-emerald-200', 'icon' => 'fa-circle-check', 'label' => 'Selesai & Siap Diambil'],
+                            'dibatalkan' => ['bg' => 'bg-rose-50', 'text' => 'text-rose-800', 'border' => 'border-rose-200', 'icon' => 'fa-circle-xmark', 'label' => 'Dibatalkan']
+                        ];
+                        $currSt = $stColors[$st] ?? $stColors['menunggu'];
+
+                        $waDirectMsg = "Halo Kasir Aquiris Print, saya ingin menanyakan pesanan cetak saya dengan kode *#{$trackedOrder['order_code']}*.";
+                        $waDirectLink = buildWaLink($shopPhone, $waDirectMsg);
+                    ?>
+                    <div class="max-w-xl mx-auto bg-[#FAF8F5] rounded-2xl border-2 border-stone-200 p-5 text-xs shadow-sm space-y-4">
+                        <div class="flex items-center justify-between pb-3 border-b border-stone-200">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-stone-400 block">Kode Pesanan</span>
+                                <span class="font-mono font-black text-sm text-stone-900">#<?= htmlspecialchars($trackedOrder['order_code']) ?></span>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-black text-xs border <?= $currSt['bg'] ?> <?= $currSt['text'] ?> <?= $currSt['border'] ?>">
+                                <i class="fa-solid <?= $currSt['icon'] ?>"></i>
+                                <span><?= $currSt['label'] ?></span>
+                            </span>
+                        </div>
+
+                        <!-- Progress Steps Tracker -->
+                        <div class="grid grid-cols-3 gap-2 text-center text-[11px] py-1">
+                            <div class="p-2.5 rounded-xl border <?= in_array($st, ['menunggu', 'diproses', 'selesai']) ? 'bg-amber-100/70 border-amber-300 text-amber-900 font-bold' : 'bg-white border-stone-200 text-stone-400' ?>">
+                                <i class="fa-solid fa-inbox block text-sm mb-1 text-amber-600"></i>
+                                <span>1. Diterima</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl border <?= in_array($st, ['diproses', 'selesai']) ? 'bg-blue-100/70 border-blue-300 text-blue-900 font-bold' : 'bg-white border-stone-200 text-stone-400' ?>">
+                                <i class="fa-solid fa-print block text-sm mb-1 text-blue-600"></i>
+                                <span>2. Dicetak</span>
+                            </div>
+                            <div class="p-2.5 rounded-xl border <?= $st === 'selesai' ? 'bg-emerald-100/70 border-emerald-300 text-emerald-900 font-bold' : 'bg-white border-stone-200 text-stone-400' ?>">
+                                <i class="fa-solid fa-circle-check block text-sm mb-1 text-emerald-600"></i>
+                                <span>3. Siap Ambil</span>
+                            </div>
+                        </div>
+
+                        <!-- Details -->
+                        <div class="space-y-1.5 bg-white p-3.5 rounded-xl border border-stone-200 text-stone-600">
+                            <div class="flex justify-between">
+                                <span class="text-stone-400">Nama Pemesan:</span>
+                                <span class="font-bold text-stone-800"><?= htmlspecialchars($trackedOrder['customer_name']) ?></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-stone-400">Layanan & Kertas:</span>
+                                <span class="font-bold text-stone-800"><?= htmlspecialchars($trackedOrder['service_type']) ?> (<?= htmlspecialchars($trackedOrder['paper_type']) ?>)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-stone-400">Jumlah & Finishing:</span>
+                                <span class="font-bold text-stone-800"><?= htmlspecialchars($trackedOrder['quantity']) ?> Rangkap • <?= htmlspecialchars($trackedOrder['finishing']) ?></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-stone-400">Waktu Masuk:</span>
+                                <span class="font-semibold text-stone-700"><?= formatDate($trackedOrder['created_at'], true) ?></span>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Status Note & Action -->
+                        <div class="p-3 rounded-xl <?= $currSt['bg'] ?> border <?= $currSt['border'] ?> text-[11px] <?= $currSt['text'] ?> flex items-start gap-2">
+                            <i class="fa-solid fa-circle-info text-sm mt-0.5 shrink-0"></i>
+                            <div>
+                                <?php if ($st === 'menunggu'): ?>
+                                    <strong>Pesanan Dalam Antrean:</strong> File Anda sudah kami terima dan menunggu giliran cetak. Kami akan otomatis mengabari via WhatsApp saat mulai diproses.
+                                <?php elseif ($st === 'diproses'): ?>
+                                    <strong>Sedang Dikerjakan:</strong> Tim operator kami saat ini sedang mencetak berkas Anda di printer toko. Mohon ditunggu sebentar ya!
+                                <?php elseif ($st === 'selesai'): ?>
+                                    <strong>Dokumen Siap Diambil:</strong> Cetakan Anda sudah selesai rapi! Silakan datang ke Studio Aquiris Print di <strong>Rusunawa USN Popalia</strong> dan sebutkan kode #<?= htmlspecialchars($trackedOrder['order_code']) ?> kepada kasir.
+                                <?php elseif ($st === 'dibatalkan'): ?>
+                                    <strong>Pesanan Dibatalkan:</strong> Hubungi kasir jika ada kendala berkas atau ingin mengirim pesanan baru.
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-3 pt-2">
+                            <a href="<?= $waDirectLink ?>" target="_blank" class="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-center transition flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="fa-brands fa-whatsapp text-sm"></i>
+                                <span>Hubungi Kasir Toko</span>
+                            </a>
+                            <a href="index.php#order-form" class="py-2 px-3 bg-stone-200 hover:bg-stone-300 text-stone-800 font-bold rounded-xl text-center transition">
+                                Pesan Lagi
+                            </a>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </section>
+
     <!-- Main Order & File Upload Form Section -->
     <section id="order-form" class="py-10 bg-white border-y border-stone-200 scroll-mt-24">
         <div class="max-w-4xl mx-auto px-4 sm:px-6">
@@ -791,7 +964,13 @@ $acrylicShowcase = $pdo->query("SELECT * FROM acrylic_items WHERE status = 'avai
                                     <input type="tel" name="customer_phone" id="customer_phone" required placeholder="Contoh: 081234567890"
                                            class="w-full pl-9 pr-4 py-2.5 bg-white border border-stone-300 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 font-bold text-emerald-800 text-xs" />
                                 </div>
-                                <span class="text-[10px] text-stone-400 mt-1 block">Operator akan menghubungi WhatsApp ini jika ada konfirmasi atau saat cetakan siap diambil.</span>
+                                <div class="mt-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200/80 text-[11px] text-emerald-900 flex items-start gap-2 shadow-xs">
+                                    <i class="fa-brands fa-whatsapp text-emerald-600 text-sm mt-0.5 shrink-0"></i>
+                                    <div class="leading-tight">
+                                        <strong class="font-bold">Notifikasi Status Otomatis:</strong>
+                                        <span class="text-stone-600 block mt-0.5">Sistem akan otomatis mengirim pesan WA saat pesanan Anda <em>mulai dicetak</em> & saat <em>selesai siap diambil</em> di Rusunawa USN Popalia.</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

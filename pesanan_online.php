@@ -12,9 +12,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     $allowed = ['menunggu', 'diproses', 'selesai', 'dibatalkan'];
 
     if (in_array($newStatus, $allowed)) {
-        $stmt = $pdo->prepare("UPDATE online_orders SET status = ? WHERE id = ?");
-        $stmt->execute([$newStatus, $orderId]);
-        setFlash('success', "Status pesanan berhasil diubah menjadi: " . strtoupper($newStatus));
+        $stmtOrd = $pdo->prepare("SELECT * FROM online_orders WHERE id = ?");
+        $stmtOrd->execute([$orderId]);
+        $order = $stmtOrd->fetch();
+
+        if ($order) {
+            $oldStatus = $order['status'];
+            $stmt = $pdo->prepare("UPDATE online_orders SET status = ? WHERE id = ?");
+            $stmt->execute([$newStatus, $orderId]);
+
+            $shopName = getSetting('shop_name', 'Aquiris Print & Acrylic Studio');
+            $shopAddress = getSetting('shop_address', 'Rusunawa USN Popalia, Kec. Tanggetada, Kolaka');
+            $customerName = $order['customer_name'];
+            $customerPhone = $order['customer_phone'];
+            $orderCode = $order['order_code'];
+            $serviceType = $order['service_type'];
+
+            $waMsg = "";
+            $statusLabel = strtoupper($newStatus);
+
+            if ($newStatus === 'diproses') {
+                $statusLabel = "SEDANG DIPROSES / DICETAK";
+                $waMsg = "⚙️ *UPDATE STATUS: PESANAN SEDANG DICETAK!*\n"
+                       . "*{$shopName}*\n"
+                       . "────────────────────────────\n"
+                       . "Halo kak *{$customerName}*,\n"
+                       . "Pesanan cetak Anda dengan Kode: *#{$orderCode}* ({$serviceType}) saat ini *SEDANG KAMI PROSES / CETAK* di mesin printer toko.\n\n"
+                       . "Mohon ditunggu sebentar ya kak, kami akan segera mengirimkan notifikasi WhatsApp lagi saat dokumen Anda sudah selesai dan siap diambil!\n\n"
+                       . "📍 *Lokasi Toko:* {$shopAddress}\n"
+                       . "────────────────────────────\n"
+                       . "_Sistem Notifikasi Otomatis Aquiris Print_";
+            } elseif ($newStatus === 'selesai') {
+                $statusLabel = "SELESAI & SIAP DIAMBIL";
+                $waMsg = "✅ *UPDATE STATUS: PESANAN SELESAI & SIAP DIAMBIL!*\n"
+                       . "*{$shopName}*\n"
+                       . "────────────────────────────\n"
+                       . "Halo kak *{$customerName}*,\n"
+                       . "Kabar baik! Dokumen pesanan cetak Anda dengan Kode: *#{$orderCode}* ({$serviceType}) *SUDAH SELESAI DICETAK* dan siap diambil di toko.\n\n"
+                       . "Silakan langsung datang ke lokasi kami:\n"
+                       . "📍 *Tempat Pengambilan:* {$shopAddress}\n"
+                       . "⏰ *Jam Layanan:* 08.00 - 21.00 WITA\n\n"
+                       . "Tunjukkan kode pesanan *#{$orderCode}* kepada kasir saat mengambil ya kak. Sampai jumpa di Aquiris Print! 😊\n\n"
+                       . "────────────────────────────\n"
+                       . "_Aquiris Print Popalia - Siap Membantu Kebutuhan Cetak Anda_";
+            } elseif ($newStatus === 'dibatalkan') {
+                $statusLabel = "DIBATALKAN";
+                $waMsg = "❌ *PEMBERITAHUAN: PESANAN DIBATALKAN*\n"
+                       . "*{$shopName}*\n"
+                       . "────────────────────────────\n"
+                       . "Halo kak *{$customerName}*,\n"
+                       . "Pesanan cetak online Anda dengan Kode: *#{$orderCode}* ({$serviceType}) saat ini berstatus *DIBATALKAN*.\n\n"
+                       . "Jika ini terjadi karena kendala format file atau Anda ingin mencetak ulang, silakan hubungi kasir kami via WhatsApp ini.\n\n"
+                       . "────────────────────────────\n"
+                       . "_Aquiris Print Popalia_";
+            } elseif ($newStatus === 'menunggu') {
+                $statusLabel = "MENUNGGU CETAK";
+            }
+
+            $notifStatus = "";
+            if (!empty($waMsg) && !empty($customerPhone) && $oldStatus !== $newStatus) {
+                $res = sendFonnteMessage($customerPhone, $waMsg);
+                if ($res['status']) {
+                    $notifStatus = " & Notifikasi WA terkirim otomatis ke {$customerPhone}!";
+                } else {
+                    $notifStatus = " (Catatan WA: " . ($res['message'] ?? 'Gateway belum terhubung') . ")";
+                }
+            }
+
+            setFlash('success', "Status pesanan #{$orderCode} diubah menjadi: " . $statusLabel . $notifStatus);
+        }
     }
     header('Location: pesanan_online.php' . (isset($_GET['status']) ? '?status=' . urlencode($_GET['status']) : ''));
     exit;
