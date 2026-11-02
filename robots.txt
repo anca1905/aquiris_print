@@ -1,0 +1,35 @@
+# robots.txt for Aquiris Print
+# https://aquiris.skillance.cloud/
+
+User-agent: *
+Allow: /
+Allow: /assets/css/
+Allow: /assets/js/
+Allow: /assets/images/
+
+# Disallow internal staff & admin management pages
+Disallow: /dashboard.php
+Disallow: /login.php
+Disallow: /logout.php
+Disallow: /kasir.php
+Disallow: /laporan.php
+Disallow: /pengaturan.php
+Disallow: /bagi_hasil.php
+Disallow: /arus_kas.php
+Disallow: /produk.php
+Disallow: /pelanggan.php
+Disallow: /pesanan_online.php
+Disallow: /rental_akrilik.php
+Disallow: /rental_tambah.php
+Disallow: /rental_detail.php
+Disallow: /akrilik_master.php
+Disallow: /transaksi_cetak.php
+Disallow: /print_*.php
+Disallow: /config/
+Disallow: /includes/
+
+# Protect customer uploaded documents from public search indexing
+Disallow: /assets/uploads/orders/
+
+# Sitemap Location
+Sitemap: https://aquiris.skillance.cloud/sitemap.xml

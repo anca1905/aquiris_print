@@ -148,7 +148,136 @@ $acrylicShowcase = $pdo->query("SELECT * FROM acrylic_items WHERE status = 'avai
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($shopName) ?> • Kirim File Cetak & Sewa Akrilik Online</title>
+    <!-- Primary SEO Meta Tags -->
+    <title><?= htmlspecialchars($shopName) ?> • Percetakan, Fotocopy & Sewa Papan Akrilik Rusunawa USN Popalia Kolaka</title>
+    <meta name="title" content="<?= htmlspecialchars($shopName) ?> • Percetakan, Fotocopy & Sewa Papan Akrilik Rusunawa USN Popalia Kolaka">
+    <meta name="description" content="Pusat percetakan murah, cepat, dan berkualitas di Rusunawa USN Popalia, Tanggetada, Kolaka. Melayani print dokumen tugas, skripsi, fotocopy, jilid, dan sewa papan akrilik event online. Siap ambil langsung!">
+    <meta name="keywords" content="aquiris print, percetakan usn popalia, print usn kolaka, fotocopy popalia, print skripsi tanggetada, sewa akrilik popalia, sewa papan akrilik kolaka, cetak tugas mahasiswa usn, percetakan kolaka">
+    <meta name="author" content="Aquiris Print & Acrylic Studio">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="https://aquiris.skillance.cloud/">
+
+    <!-- Geo Tags for Local SEO (Popalia, Tanggetada, Kolaka) -->
+    <meta name="geo.region" content="ID-SG">
+    <meta name="geo.placename" content="Popalia, Kec. Tanggetada, Kabupaten Kolaka, Sulawesi Tenggara">
+    <meta name="geo.position" content="-4.2818;121.5422">
+    <meta name="ICBM" content="-4.2818, 121.5422">
+
+    <!-- Open Graph / Facebook / WhatsApp Preview Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aquiris.skillance.cloud/">
+    <meta property="og:site_name" content="Aquiris Print Popalia">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:title" content="Aquiris Print • Percetakan & Rental Akrilik Rusunawa USN Popalia">
+    <meta property="og:description" content="Kirim file tugas, makalah & skripsi online tanpa antre! Tarif mulai Rp 500/lbr. Percetakan resmi di Rusunawa USN Popalia, Kec. Tanggetada, Kolaka.">
+    <meta property="og:image" content="https://aquiris.skillance.cloud/assets/images/og-banner.jpg">
+    <meta property="og:image:secure_url" content="https://aquiris.skillance.cloud/assets/images/og-banner.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Aquiris Print Popalia Banner Layanan">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://aquiris.skillance.cloud/">
+    <meta name="twitter:title" content="Aquiris Print • Percetakan & Rental Akrilik Rusunawa USN Popalia">
+    <meta name="twitter:description" content="Kirim file cetak online tugas & skripsi langsung diproses printer toko. Melayani mahasiswa FTI USN Popalia & umum.">
+    <meta name="twitter:image" content="https://aquiris.skillance.cloud/assets/images/og-banner.jpg">
+
+    <!-- PWA & Mobile Web App Manifest -->
+    <meta name="theme-color" content="#d97706">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Aquiris Print">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!-- Google Rich Results / Schema.org JSON-LD Structured Data for Local Business -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": ["LocalBusiness", "PrintShop"],
+      "name": "Aquiris Print & Acrylic Studio",
+      "alternateName": ["Aquiris Print Popalia", "Aquiris Print"],
+      "url": "https://aquiris.skillance.cloud/",
+      "logo": "https://aquiris.skillance.cloud/assets/images/icon-mark.png",
+      "image": "https://aquiris.skillance.cloud/assets/images/og-banner.jpg",
+      "description": "Pusat percetakan, print tugas mahasiswa FTI USN, cetak skripsi, fotocopy, dan persewaan papan akrilik event di Rusunawa USN Popalia, Tanggetada, Kolaka.",
+      "telephone": "+6281525876330",
+      "priceRange": "Rp 500 - Rp 150.000",
+      "currenciesAccepted": "IDR",
+      "paymentAccepted": "Cash, Transfer Bank, QRIS",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Rusunawa Kampus FTI USN Popalia",
+        "addressLocality": "Tanggetada",
+        "addressRegion": "Sulawesi Tenggara",
+        "postalCode": "93563",
+        "addressCountry": "ID"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -4.2818,
+        "longitude": 121.5422
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "08:00",
+          "closes": "21:00"
+        }
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Layanan Percetakan & Sewa Akrilik",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Cetak Dokumen Teks Hitam Putih (B/W)"
+            },
+            "price": "500",
+            "priceCurrency": "IDR"
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Cetak Dokumen & Gambar Berwarna"
+            },
+            "price": "1000",
+            "priceCurrency": "IDR"
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Sewa Papan Akrilik Event & Wisuda"
+            },
+            "price": "25000",
+            "priceCurrency": "IDR"
+          }
+        ]
+      },
+      "potentialAction": {
+        "@type": "OrderAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://aquiris.skillance.cloud/#order-form",
+          "inLanguage": "id-ID",
+          "actionPlatform": [
+            "http://schema.org/DesktopWebPlatform",
+            "http://schema.org/MobileWebPlatform"
+          ]
+        },
+        "result": {
+          "@type": "Order",
+          "orderStatus": "http://schema.org/OrderProcessing"
+        }
+      }
+    }
+    </script>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/images/icon-mark.png">
