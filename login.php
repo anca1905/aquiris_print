@@ -131,36 +131,14 @@ $shopTagline = getSetting('shop_tagline', 'Solusi Percetakan & Sewa Papan Akrili
                     </button>
                 </div>
             </form>
-
-            <!-- Quick Demo Credentials Box -->
-            <div class="mt-6 pt-5 border-t border-stone-100">
-                <span class="text-[11px] font-semibold text-stone-400 block text-center mb-2.5">Pilihan Cepat (Demo Akun):</span>
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <button type="button" onclick="fillCreds('admin', 'admin123')" class="py-2 px-3 bg-stone-50 hover:bg-stone-100 text-stone-700 font-bold rounded-xl border border-stone-200 transition text-center flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-user-shield text-amber-600"></i>
-                        <span>Admin</span>
-                    </button>
-                    <button type="button" onclick="fillCreds('kasir', 'kasir123')" class="py-2 px-3 bg-stone-50 hover:bg-stone-100 text-stone-700 font-bold rounded-xl border border-stone-200 transition text-center flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-cash-register text-emerald-600"></i>
-                        <span>Kasir</span>
-                    </button>
-                </div>
-            </div>
         </div>
 
         <div class="text-center text-xs text-stone-500 mt-6 flex items-center justify-center gap-2">
             <span>&copy; <?= date('Y') ?></span>
             <span class="font-bold text-stone-700"><?= htmlspecialchars($shopName) ?></span>
             <span>•</span>
-            <span>Laragon MySQL</span>
+            <span>Sistem Kasir & Rental</span>
         </div>
     </div>
-
-    <script>
-        function fillCreds(u, p) {
-            document.getElementById('username').value = u;
-            document.getElementById('password').value = p;
-        }
-    </script>
 </body>
 </html>
